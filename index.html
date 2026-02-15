@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لعبة توصيل الحروف</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Tajawal", Arial, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        direction: rtl;
+      }
+
+      .game-container {
+        width: 100%;
+        max-width: 900px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        padding: 25px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 25px;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .header h1 {
+        font-size: 2.8rem;
+        margin-bottom: 10px;
+        background: linear-gradient(to right, #ffd700, #ff8c00);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .teams-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        gap: 20px;
+      }
+
+      .team {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 15px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+      }
+
+      .team:hover {
+        transform: translateY(-5px);
+      }
+
+      .team.blue {
+        border: 3px solid #4d9de0;
+      }
+
+      .team.green {
+        border: 3px solid #4caf50;
+      }
+
+      .team h2 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        color: white;
+      }
+
+      .team input {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.9);
+        font-size: 1.2rem;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .team .status {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        height: 30px;
+      }
+
+      .game-area {
+        position: relative;
+        margin: 20px 0;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 15px;
+        padding: 20px;
+      }
+
+      .hex-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+      }
+
+      .hex-row {
+        display: flex;
+        gap: 0;
+      }
+
+      .hex-row:nth-child(odd) {
+        margin-right: 52px;
+      }
+
+      .hex-cell {
+        width: 90px;
+        height: 102px;
+        background-color: white;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #1a2a6c;
+        clip-path: polygon(
+          50% 0%,
+          100% 25%,
+          100% 75%,
+          50% 100%,
+          0% 75%,
+          0% 25%
+        );
+        margin: -10px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border: 2px solid #ddd;
+        user-select: none;
+      }
+
+      .hex-cell:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        z-index: 2;
+      }
+
+      .hex-cell.selected-blue {
+        background-color: #4d9de0 !important;
+        color: white;
+      }
+
+      .hex-cell.selected-green {
+        background-color: #4caf50 !important;
+        color: white;
+      }
+
+      .hex-cell.neutral {
+        background-color: white !important;
+        color: #1a2a6c;
+      }
+
+      .hex-cell.connected {
+        box-shadow:
+          0 0 0 3px gold,
+          inset 0 0 10px gold;
+        animation: pulse 1.5s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(255, 215, 0, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+        }
+      }
+
+      .controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        padding: 12px 25px;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        min-width: 150px;
+      }
+
+      #randomize-button {
+        background: linear-gradient(to right, #ff8c00, #ffd700);
+        color: #1a2a6c;
+      }
+
+      #reset-button {
+        background: linear-gradient(to right, #e74c3c, #c0392b);
+        color: white;
+      }
+
+      button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      .winner-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+      }
+
+      .winner-modal.show {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .winner-content {
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transform: scale(0.8);
+        animation: popIn 0.5s forwards;
+      }
+
+      @keyframes popIn {
+        to {
+          transform: scale(1);
+        }
+      }
+
+      .winner-content h2 {
+        font-size: 2.5rem;
+        color: #ffd700;
+        margin-bottom: 20px;
+      }
+
+      .winner-name {
+        font-size: 3rem;
+        color: white;
+        margin: 20px 0;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+      }
+
+      .congratulations {
+        font-size: 1.8rem;
+        color: #4caf50;
+        margin: 20px 0;
+      }
+
+      #close-modal {
+        background: linear-gradient(to right, #4caf50, #8bc34a);
+        color: white;
+        padding: 12px 30px;
+        font-size: 1.3rem;
+        margin-top: 20px;
+      }
+
+      .instructions {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 25px;
+        color: white;
+      }
+
+      .instructions h3 {
+        text-align: center;
+        margin-bottom: 15px;
+        color: #ffd700;
+      }
+
+      .instructions ul {
+        padding-right: 20px;
+      }
+
+      .instructions li {
+        margin-bottom: 10px;
+        line-height: 1.6;
+      }
+
+      .status-indicator {
+        text-align: center;
+        font-size: 1.3rem;
+        color: white;
+        margin: 15px 0;
+        min-height: 30px;
+        font-weight: bold;
+      }
+
+      .legend {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: white;
+        font-size: 1.1rem;
+      }
+
+      .legend-color {
+        width: 25px;
+        height: 25px;
+        border-radius: 4px;
+      }
+
+      .legend-blue {
+        background-color: #4d9de0;
+      }
+
+      .legend-green {
+        background-color: #4caf50;
+      }
+
+      .legend-white {
+        background-color: white;
+        border: 1px solid #ccc;
+      }
+
+      footer {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 30px;
+        padding: 15px;
+        font-size: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      @media (max-width: 768px) {
+        .teams-container {
+          flex-direction: column;
+        }
+
+        .hex-cell {
+          width: 60px;
+          height: 68px;
+          font-size: 1.8rem;
+        }
+
+        .hex-row:nth-child(odd) {
+          margin-right: 30px;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .controls {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        button {
+          width: 100%;
+          max-width: 300px;
+        }
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="game-container">
+      <div class="header">
+        <h1>لعبة توصيل الحروف العربية</h1>
+        <p>قم بتوصيل الحروف من الجانب الأيمن إلى الجانب الأيسر للفوز!</p>
+      </div>
+
+      <div class="teams-container">
+        <div class="team blue">
+          <h2>الفريق الأزرق</h2>
+          <input
+            type="text"
+            id="blue-team-name"
+            value="الأزرق"
+            placeholder="اسم الفريق"
+          />
+        </div>
+
+        <div class="team green">
+          <h2>الفريق الأخضر</h2>
+          <input
+            type="text"
+            id="green-team-name"
+            value="الأخضر"
+            placeholder="اسم الفريق"
+          />
+          <div class="status" id="green-status"></div>
+        </div>
+      </div>
+
+      <div class="status-indicator" id="game-status">
+        الفريق الأزرق يبدأ أولاً - اختر حرفًا للبدء
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color legend-blue"></div>
+          <span>الفريق الأزرق</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color legend-green"></div>
+          <span>الفريق الأخضر</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color legend-white"></div>
+          <span>غير محدد</span>
+        </div>
+      </div>
+
+      <div class="game-area">
+        <div class="hex-grid" id="hex-grid">
+          <!-- Hexagonal cells will be generated here -->
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="randomize-button">تغيير الحروف</button>
+        <button id="reset-button">إعادة اللعبة</button>
+      </div>
+
+      <div class="instructions">
+        <h3>كيفية اللعب:</h3>
+        <ul>
+          <li>اضغط على الحرف لتغيير حالته (أزرق ← أخضر ← أبيض ← أزرق)</li>
+          <li>الفريق الأزرق يبدأ أولاً</li>
+          <li>قم بتوصيل حروفك من الجانب الأيمن إلى الجانب الأيسر للفوز</li>
+          <li>الفوز يتم تلقائيًا عند إنشاء توصيل كامل</li>
+        </ul>
+      </div>
+
+      <footer>Abdullah AlGosaibi - aalgosaibi9@gmail.com © 2026</footer>
+    </div>
+
+    <div class="winner-modal" id="winner-modal">
+      <div class="winner-content">
+        <h2>تهانينا!</h2>
+        <div class="congratulations">🎉 مبروك الفوز 🎉</div>
+        <div class="winner-name" id="winner-name">الفريق الفائز</div>
+        <button id="close-modal">العب مرة أخرى</button>
+      </div>
+    </div>
+
+    <script>
+      // List of Arabic letters (28 letters)
+      const arabicLetters = [
+        "ا",
+        "ب",
+        "ت",
+        "ث",
+        "ج",
+        "ح",
+        "خ",
+        "د",
+        "ذ",
+        "ر",
+        "ز",
+        "س",
+        "ش",
+        "ص",
+        "ض",
+        "ط",
+        "ظ",
+        "ع",
+        "غ",
+        "ف",
+        "ق",
+        "ك",
+        "ل",
+        "م",
+        "ن",
+        "ه",
+        "و",
+        "ي",
+      ];
+
+      let currentTeam = "blue"; // Start with blue team
+      let board = []; // To store the state of each cell
+      let gridSize = { rows: 5, cols: 5 };
+
+      // Initialize the game
+      function initGame() {
+        generateHexGrid();
+        updateTurnIndicator();
+      }
+
+      // Function to generate a hexagonal grid
+      function generateHexGrid() {
+        const hexGrid = document.getElementById("hex-grid");
+        hexGrid.innerHTML = ""; // Clear the grid
+        board = [];
+
+        // Select 25 random letters
+        const randomLetters = [];
+        while (randomLetters.length < 25) {
+          const randomLetter =
+            arabicLetters[Math.floor(Math.random() * arabicLetters.length)];
+          if (!randomLetters.includes(randomLetter)) {
+            randomLetters.push(randomLetter);
+          }
+        }
+
+        // Create hexagonal grid
+        for (let i = 0; i < gridSize.rows; i++) {
+          const hexRow = document.createElement("div");
+          hexRow.classList.add("hex-row");
+          board[i] = [];
+
+          for (let j = 0; j < gridSize.cols; j++) {
+            const hexCell = document.createElement("div");
+            hexCell.classList.add("hex-cell", "neutral");
+            hexCell.textContent = randomLetters[i * gridSize.cols + j];
+            hexCell.dataset.row = i;
+            hexCell.dataset.col = j;
+            hexCell.dataset.state = "neutral"; // neutral, blue, green
+
+            // Add click event to cycle through states
+            hexCell.addEventListener("click", function () {
+              cycleState(this);
+            });
+
+            hexRow.appendChild(hexCell);
+            board[i][j] = {
+              element: hexCell,
+              state: "neutral",
+              connected: false,
+            };
+          }
+          hexGrid.appendChild(hexRow);
+        }
+      }
+
+      // Function to cycle through states: neutral → blue → green → neutral
+      function cycleState(cell) {
+        const row = parseInt(cell.dataset.row);
+        const col = parseInt(cell.dataset.col);
+
+        // Cycle through states
+        if (board[row][col].state === "neutral") {
+          board[row][col].state = "blue";
+          cell.classList.remove("neutral", "selected-green");
+          cell.classList.add("selected-blue");
+        } else if (board[row][col].state === "blue") {
+          board[row][col].state = "green";
+          cell.classList.remove("selected-blue");
+          cell.classList.add("selected-green");
+        } else {
+          board[row][col].state = "neutral";
+          cell.classList.remove("selected-blue", "selected-green");
+          cell.classList.add("neutral");
+        }
+
+        // Check for win after each state change
+        checkForWin();
+      }
+
+      // Check if a team has won by connecting from right to left
+      function checkConnection(team) {
+        // Find all cells belonging to the team
+        const teamCells = [];
+        for (let i = 0; i < gridSize.rows; i++) {
+          for (let j = 0; j < gridSize.cols; j++) {
+            if (board[i][j].state === team) {
+              teamCells.push({ row: i, col: j });
+            }
+          }
+        }
+
+        // Find starting positions (rightmost column)
+        const startPositions = teamCells.filter(
+          (cell) => cell.col === gridSize.cols - 1,
+        );
+
+        if (startPositions.length === 0) return false;
+
+        // BFS to find path to leftmost column
+        const visited = Array(gridSize.rows)
+          .fill()
+          .map(() => Array(gridSize.cols).fill(false));
+        const queue = [...startPositions];
+        const path = {}; // To track the path
+
+        // Mark start positions as visited
+        startPositions.forEach((pos) => {
+          visited[pos.row][pos.col] = true;
+          path[`${pos.row},${pos.col}`] = null; // Starting points have no parent
+        });
+
+        // Directions for adjacent hexagons (even and odd rows have different neighbors)
+        const directions = [
+          // Even rows (0, 2, 4, ...)
+          [
+            [-1, 0],
+            [-1, 1],
+            [0, 1],
+            [1, 1],
+            [1, 0],
+            [0, -1],
+          ],
+          // Odd rows (1, 3, 5, ...)
+          [
+            [-1, -1],
+            [-1, 0],
+            [0, 1],
+            [1, 0],
+            [1, -1],
+            [0, -1],
+          ],
+        ];
+
+        while (queue.length > 0) {
+          const current = queue.shift();
+
+          // Check if we reached the leftmost column
+          if (current.col === 0) {
+            highlightPath(current, path, team);
+            return true;
+          }
+
+          // Determine which direction set to use based on row parity
+          const dirSet = directions[current.row % 2];
+
+          // Check all neighbors
+          for (const [dr, dc] of dirSet) {
+            const newRow = current.row + dr;
+            const newCol = current.col + dc;
+
+            // Check bounds
+            if (
+              newRow >= 0 &&
+              newRow < gridSize.rows &&
+              newCol >= 0 &&
+              newCol < gridSize.cols
+            ) {
+              // Check if cell belongs to the same team and hasn't been visited
+              if (
+                board[newRow][newCol].state === team &&
+                !visited[newRow][newCol]
+              ) {
+                visited[newRow][newCol] = true;
+                path[`${newRow},${newCol}`] = current; // Store parent for path tracing
+                queue.push({ row: newRow, col: newCol });
+              }
+            }
+          }
+        }
+
+        return false;
+      }
+
+      // Highlight the winning path
+      function highlightPath(endCell, path, team) {
+        let current = endCell;
+        const pathCoords = [];
+
+        // Trace back the path
+        while (current !== null) {
+          pathCoords.push(current);
+          const key = `${current.row},${current.col}`;
+          current = path[key];
+        }
+
+        // Highlight all cells in the path
+        pathCoords.forEach((coord) => {
+          board[coord.row][coord.col].element.classList.add("connected");
+        });
+      }
+
+      // Check for win condition automatically
+      function checkForWin() {
+        // Check both teams
+        if (checkConnection("blue")) {
+          showWinner("blue");
+          return;
+        }
+
+        if (checkConnection("green")) {
+          showWinner("green");
+          return;
+        }
+      }
+
+      // Function to show winner modal
+      function showWinner(team) {
+        const winnerName =
+          document.getElementById(`${team}-team-name`).value ||
+          `الفريق ${team === "blue" ? "الأزرق" : "الأخضر"}`;
+        document.getElementById("winner-name").textContent = winnerName;
+        document.getElementById("winner-modal").classList.add("show");
+      }
+
+      // Function to reset the game
+      function resetGame() {
+        generateHexGrid();
+        document.getElementById("winner-modal").classList.remove("show");
+      }
+
+      // Event listeners
+      document
+        .getElementById("randomize-button")
+        .addEventListener("click", resetGame);
+      document
+        .getElementById("reset-button")
+        .addEventListener("click", resetGame);
+      document
+        .getElementById("close-modal")
+        .addEventListener("click", resetGame);
+
+      // Initialize the game on page load
+      window.onload = initGame;
+    </script>
+  </body>
+</html>
