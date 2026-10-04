@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تأسيس المنزل الذكي - أَمْرْ</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Google Fonts: Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        tajawal: ['Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* Smooth SPA transitions */
+        .step-section {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        /* Pulsing Hotspot Animation */
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 14px rgba(34, 197, 94, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
+        }
+
+        .hotspot-pulse {
+            animation: pulse-ring 2s infinite;
+        }
+
+        /* Zoom container effect */
+        .zoom-container {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Movie mode filter effect */
+        .movie-mode {
+            filter: brightness(0.4) contrast(1.3) saturate(1.2) hue-rotate(15deg);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800">
+
+    <!-- Sticky Navbar -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-brand-500/20">
+                    أ
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight text-slate-900">أَمْرْ</h1>
+                    <p class="text-xs text-slate-500 font-medium">خدمات تأسيس المنزل الذكي</p>
+                </div>
+            </div>
+
+            <!-- Global Price Counter -->
+            <div class="flex items-center gap-3 bg-brand-50 border border-brand-200 px-5 py-2.5 rounded-2xl shadow-sm">
+                <div class="text-right">
+                    <span class="block text-xs text-brand-700 font-semibold">الإجمالي التقديري</span>
+                    <div class="text-lg font-black text-brand-900">
+                        <span id="global-total-price">0</span> <span class="text-xs font-bold">ر.س</span>
+                    </div>
+                </div>
+                <div class="w-9 h-9 rounded-xl bg-brand-500 text-white flex items-center justify-center shadow-md shadow-brand-500/30">
+                    <i class="fa-solid fa-receipt text-sm"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ==================== STEP 1: ROOM SELECTION ==================== -->
+        <section id="step-1" class="step-section space-y-8">
+            <div class="text-center max-w-2xl mx-auto space-y-3">
+                <span class="inline-block px-3.5 py-1.5 rounded-full bg-brand-100 text-brand-800 text-xs font-bold tracking-wide">الخطوة الأولى</span>
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-900">حدد غرف منزلك الذكي</h2>
+                <p class="text-slate-600 text-sm sm:text-base">قم بتحديد عدد المجالس وغرف النوم التي ترغب في تجهيزها بأنظمة أَمْرْ الذكية (الحد الأقصى غرفتين لكل نوع للتجربة).</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <!-- Majlis Card -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xl shadow-slate-100 flex flex-col justify-between hover:border-brand-300 transition-all">
+                    <div class="flex items-start justify-between">
+                        <div class="space-y-1">
+                            <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-3 py-1 rounded-full">استقبال وضيافة</span>
+                            <h3 class="text-2xl font-black text-slate-900 pt-2">المجلس</h3>
+                            <p class="text-slate-500 text-sm">مجلس واسع مهيأ لتكامل الإضاءات الذكية وأنظمة التكييف.</p>
+                        </div>
+                        <div class="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl shadow-inner">
+                            <i class="fa-solid fa-couch"></i>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-sm font-bold text-slate-700">العدد:</span>
+                        <div class="flex items-center gap-4 bg-slate-50 p-2 rounded-2xl border border-slate-200">
+                            <button onclick="updateRoomCount('majlis', -1)" class="w-10 h-10 rounded-xl bg-white text-slate-700 hover:bg-slate-200 shadow-sm font-bold flex items-center justify-center transition-all active:scale-95">
+                                <i class="fa-solid fa-minus text-xs"></i>
+                            </button>
+                            <span id="count-majlis" class="w-6 text-center font-black text-lg text-slate-900">0</span>
+                            <button onclick="updateRoomCount('majlis', 1)" class="w-10 h-10 rounded-xl bg-brand-600 text-white hover:bg-brand-700 shadow-md shadow-brand-500/20 font-bold flex items-center justify-center transition-all active:scale-95">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bedroom Card -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xl shadow-slate-100 flex flex-col justify-between hover:border-brand-300 transition-all">
+                    <div class="flex items-start justify-between">
+                        <div class="space-y-1">
+                            <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-3 py-1 rounded-full">راحة واسترخاء</span>
+                            <h3 class="text-2xl font-black text-slate-900 pt-2">غرفة النوم</h3>
+                            <p class="text-slate-500 text-sm">غرفة نوم مجهزة بمفاتيح تحكم مريحة وأوضاع سينمائية لليل.</p>
+                        </div>
+                        <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl shadow-inner">
+                            <i class="fa-solid fa-bed"></i>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
+                        <span class="text-sm font-bold text-slate-700">العدد:</span>
+                        <div class="flex items-center gap-4 bg-slate-50 p-2 rounded-2xl border border-slate-200">
+                            <button onclick="updateRoomCount('bedroom', -1)" class="w-10 h-10 rounded-xl bg-white text-slate-700 hover:bg-slate-200 shadow-sm font-bold flex items-center justify-center transition-all active:scale-95">
+                                <i class="fa-solid fa-minus text-xs"></i>
+                            </button>
+                            <span id="count-bedroom" class="w-6 text-center font-black text-lg text-slate-900">0</span>
+                            <button onclick="updateRoomCount('bedroom', 1)" class="w-10 h-10 rounded-xl bg-brand-600 text-white hover:bg-brand-700 shadow-md shadow-brand-500/20 font-bold flex items-center justify-center transition-all active:scale-95">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center pt-4">
+                <button onclick="buildHouseModel()" class="px-10 py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-lg rounded-2xl shadow-xl shadow-slate-900/20 flex items-center gap-3 transition-all active:scale-95">
+                    <span>بناء مجسم المنزل</span>
+                    <i class="fa-solid fa-arrow-left text-sm"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== STEP 2: DYNAMIC HOUSE MODEL ==================== -->
+        <section id="step-2" class="step-section hidden space-y-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <div>
+                    <span class="inline-block px-3 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-bold mb-1">الخطوة الثانية</span>
+                    <h2 class="text-2xl font-black text-slate-900">مخطط المنزل التفاعلي</h2>
+                    <p class="text-slate-500 text-sm">انقر على أي نقطة تفاعلية (Hotspot) لتخصيص محتويات الغرفة وإعداد المفاتيح.</p>
+                </div>
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <button onclick="goToStep(1)" class="px-5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-sm transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                        <span>تعديل الغرف</span>
+                    </button>
+                    <button id="checkout-btn" onclick="goToStep(4)" class="hidden px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-lg shadow-brand-500/20 transition-all flex items-center gap-2">
+                        <span>الانتقال للدفع والحجز</span>
+                        <i class="fa-solid fa-check text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Floorplan Container with Dynamic Hotspots -->
+            <div class="relative w-full h-[520px] bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-slate-800">
+                <!-- Floorplan Background Image -->
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop" 
+                     alt="House Floorplan" 
+                     class="w-full h-full object-cover opacity-60 filter contrast-125"
+                     onerror="this.src='https://placehold.co/1600x900/1e293b/ffffff?text=Floorplan+Blueprint'">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/40 to-transparent"></div>
+
+                <!-- Hotspots Injection Container -->
+                <div id="hotspots-container" class="absolute inset-0">
+                    <!-- Injected via JavaScript -->
+                </div>
+
+                <div class="absolute bottom-6 right-6 left-6 flex items-center justify-between text-white/80 text-xs sm:text-sm bg-slate-900/80 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/10">
+                    <div class="flex items-center gap-6">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-amber-500 inline-block hotspot-pulse"></span>
+                            <span>تأسيس (معلق)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-brand-500 inline-block"></span>
+                            <span>تمت التهيئة</span>
+                        </div>
+                    </div>
+                    <span class="font-medium">انقر على النقطة لإعداد الغرفة</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== STEP 3: ROOM CONFIGURATION ==================== -->
+        <section id="step-3" class="step-section hidden space-y-6">
+            <!-- Top Bar for Step 3 -->
+            <div class="flex items-center justify-between bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <div class="flex items-center gap-4">
+                    <button onclick="backToPlan()" class="w-11 h-11 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all active:scale-95">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <div>
+                        <span id="active-room-subtitle" class="text-xs font-bold text-brand-600 bg-brand-50 px-3 py-1 rounded-full">إعداد الغرفة</span>
+                        <h2 id="active-room-title" class="text-2xl font-black text-slate-900 pt-1">المجلس الأول</h2>
+                    </div>
+                </div>
+                <button onclick="toggleZoom()" id="zoom-toggle-btn" class="px-5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-sm transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass-plus text-brand-600"></i>
+                    <span>تكبير الجدار (Zoom In)</span>
+                </button>
+            </div>
+
+            <!-- Room Interior Visual & Configuration Panel Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- Visual Wall Container (Left/Right depending on RTL) -->
+                <div class="lg:col-span-7 bg-slate-900 rounded-3xl overflow-hidden shadow-2xl relative h-[450px] sm:h-[500px] border border-slate-800 flex items-center justify-center">
+                    <div id="room-bg-wrapper" class="w-full h-full relative overflow-hidden zoom-container">
+                        <img id="room-interior-img" src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1200&auto=format&fit=crop" 
+                             alt="Room Interior" 
+                             class="w-full h-full object-cover transition-all duration-500"
+                             onerror="this.src='https://placehold.co/1200x800/1e293b/ffffff?text=Room+Interior'">
+                        <div id="movie-overlay" class="absolute inset-0 bg-transparent transition-all duration-500 pointer-events-none"></div>
+                        
+                        <!-- Visual Rendered Switches Container -->
+                        <div id="rendered-switches-container" class="absolute inset-0 pointer-events-none flex flex-wrap items-center justify-center gap-4 p-12">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Floating Badge for Current Mode -->
+                    <div class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md text-white px-4 py-2 rounded-xl text-xs font-bold border border-white/10 shadow-lg">
+                        <span id="lighting-mode-badge">الوضع العادي</span>
+                    </div>
+                </div>
+
+                <!-- Configuration Panel -->
+                <div class="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xl shadow-slate-100 space-y-6">
+                    <h3 class="text-xl font-black text-slate-900 border-b border-slate-100 pb-4">مواصفات التجهيز الذكي</h3>
+
+                    <!-- 1. Total Switches Counter -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-800 text-sm">إجمالي مفاتيح الحائط (120 ر.س للمفتاح)</span>
+                            <span id="room-switch-total-label" class="font-black text-brand-600 bg-brand-50 px-3 py-1 rounded-lg text-xs">0 مفاتيح</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                            <span class="text-xs text-slate-500">الحد الأقصى 8 مفاتيح</span>
+                            <div class="flex items-center gap-3">
+                                <button onclick="updateRoomSwitches(-1)" class="w-9 h-9 rounded-xl bg-white text-slate-700 hover:bg-slate-200 shadow-sm font-bold flex items-center justify-center transition-all active:scale-95">
+                                    <i class="fa-solid fa-minus text-xs"></i>
+                                </button>
+                                <span id="room-switch-count" class="w-6 text-center font-black text-base text-slate-900">0</span>
+                                <button onclick="updateRoomSwitches(1)" class="w-9 h-9 rounded-xl bg-brand-600 text-white hover:bg-brand-700 shadow-md shadow-brand-500/20 font-bold flex items-center justify-center transition-all active:scale-95">
+                                    <i class="fa-solid fa-plus text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Color Distribution -->
+                    <div class="space-y-4 pt-2 border-t border-slate-100">
+                        <span class="font-bold text-slate-800 text-sm block">توزيع ألوان المفاتيح (مجموع الأبيض + الأسود = إجمالي المفاتيح)</span>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- White Color -->
+                            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                                        <span class="w-3 h-3 rounded-full bg-white border border-slate-300 inline-block shadow-sm"></span>
+                                        أبيض
+                                    </span>
+                                    <span id="color-white-count" class="font-black text-slate-900 text-sm">0</span>
+                                </div>
+                                <div class="flex items-center justify-center gap-2">
+                                    <button onclick="updateColorCount('white', -1)" class="w-8 h-8 rounded-lg bg-white text-slate-700 hover:bg-slate-200 shadow-sm font-bold flex items-center justify-center text-xs">
+                                        <i class="fa-solid fa-minus"></i>
+                                    </button>
+                                    <button onclick="updateColorCount('white', 1)" class="w-8 h-8 rounded-lg bg-slate-900 text-white hover:bg-slate-800 shadow-sm font-bold flex items-center justify-center text-xs">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Black Color -->
+                            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                                        <span class="w-3 h-3 rounded-full bg-slate-900 inline-block"></span>
+                                        أسود
+                                    </span>
+                                    <span id="color-black-count" class="font-black text-slate-900 text-sm">0</span>
+                                </div>
+                                <div class="flex items-center justify-center gap-2">
+                                    <button onclick="updateColorCount('black', -1)" class="w-8 h-8 rounded-lg bg-white text-slate-700 hover:bg-slate-200 shadow-sm font-bold flex items-center justify-center text-xs">
+                                        <i class="fa-solid fa-minus"></i>
+                                    </button>
+                                    <button onclick="updateColorCount('black', 1)" class="w-8 h-8 rounded-lg bg-slate-900 text-white hover:bg-slate-800 shadow-sm font-bold flex items-center justify-center text-xs">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Smart AC Controller -->
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                <i class="fa-solid fa-snowflake"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-slate-900 text-sm block">وحدة تحكم مكيف ذكي</span>
+                                <span class="text-xs text-slate-500">+250 ر.س</span>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="smart-ac-checkbox" onchange="toggleSmartAC()" class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- 6. Lighting Simulation Scenarios -->
+                    <div class="pt-2 border-t border-slate-100 space-y-3">
+                        <span class="font-bold text-slate-800 text-sm block">محاكاة سيناريوهات الإضاءة (أليكسا/سمارت)</span>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="setLightingMode('normal')" id="btn-mode-normal" class="py-2.5 px-4 rounded-xl border border-brand-500 bg-brand-50 text-brand-800 font-bold text-xs flex items-center justify-center gap-2 transition-all">
+                                <i class="fa-solid fa-sun"></i>
+                                <span>الوضع العادي</span>
+                            </button>
+                            <button onclick="setLightingMode('movie')" id="btn-mode-movie" class="py-2.5 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs flex items-center justify-center gap-2 transition-all">
+                                <i class="fa-solid fa-film"></i>
+                                <span>وضع السينما</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button onclick="saveAndReturnToPlan()" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white font-black text-base rounded-2xl shadow-xl shadow-brand-500/30 transition-all active:scale-95 flex items-center justify-center gap-2 mt-4">
+                        <i class="fa-solid fa-check text-sm"></i>
+                        <span>حفظ إعدادات الغرفة والعودة للمخطط</span>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==================== STEP 4: CHECKOUT & BOOKING ==================== -->
+        <section id="step-4" class="step-section hidden space-y-8 max-w-4xl mx-auto">
+            <div class="flex items-center justify-between bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <div>
+                    <span class="inline-block px-3 py-1 rounded-full bg-brand-100 text-brand-800 text-xs font-bold mb-1">الخطوة الأخيرة</span>
+                    <h2 class="text-2xl font-black text-slate-900">إتمام الحجز والدفع</h2>
+                    <p class="text-slate-500 text-sm">اختر مساعدك الذكي المفضل، وحدد موعد الزيارة والتركيب.</p>
+                </div>
+                <button onclick="goToStep(2)" class="px-5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-sm transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                    <span>العودة للمخطط</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Voice Assistant Selection -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xl shadow-slate-100 space-y-6 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-black text-slate-900">اختر مساعدك الذكي المفضّل</h3>
+                        <p class="text-slate-500 text-xs">سيتم ربط نظام أَمْرْ بالمنصة الصوتية المختارة لمنزلك.</p>
+
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <!-- Alexa Card -->
+                            <div id="assistant-alexa" onclick="selectAssistant('alexa')" class="cursor-pointer border-2 border-slate-200 rounded-2xl p-5 text-center space-y-3 transition-all hover:border-brand-300 relative group">
+                                <div class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-xl mx-auto shadow-inner">
+                                    <i class="fa-brands fa-amazon"></i>
+                                </div>
+                                <span class="block font-black text-slate-900 text-sm">Amazon Alexa</span>
+                                <span class="absolute top-3 left-3 w-5 h-5 rounded-full bg-brand-600 text-white text-xs flex items-center justify-center opacity-0 transition-opacity assistant-check" id="check-alexa">
+                                    <i class="fa-solid fa-check text-[10px]"></i>
+                                </span>
+                            </div>
+
+                            <!-- Google Assistant Card -->
+                            <div id="assistant-google" onclick="selectAssistant('google')" class="cursor-pointer border-2 border-slate-200 rounded-2xl p-5 text-center space-y-3 transition-all hover:border-brand-300 relative group">
+                                <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-xl mx-auto shadow-inner">
+                                    <i class="fa-brands fa-google"></i>
+                                </div>
+                                <span class="block font-black text-slate-900 text-sm">Google Assistant</span>
+                                <span class="absolute top-3 left-3 w-5 h-5 rounded-full bg-brand-600 text-white text-xs flex items-center justify-center opacity-0 transition-opacity assistant-check" id="check-google">
+                                    <i class="fa-solid fa-check text-[10px]"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Box Inside Checkout -->
+                    <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 space-y-3 mt-6">
+                        <h4 class="font-bold text-slate-800 text-sm">ملخص الطلب النهائي</h4>
+                        <div class="space-y-1.5 text-xs text-slate-600" id="checkout-summary-details">
+                            <!-- Populated via JS -->
+                        </div>
+                        <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
+                            <span class="font-bold text-slate-900 text-sm">المبلغ الإجمالي:</span>
+                            <span class="font-black text-brand-600 text-lg" id="checkout-total-display">0 ر.س</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Date & Time Form -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xl shadow-slate-100 space-y-6 flex flex-col justify-between">
+                    <div class="space-y-5">
+                        <h3 class="text-lg font-black text-slate-900">موعد الزيارة والتركيب</h3>
+                        <p class="text-slate-500 text-xs">حدد اليوم والفترة المناسبة لفريق الدعم الفني لتركيب الأنظمة.</p>
+
+                        <!-- Date Input -->
+                        <div class="space-y-2">
+                            <label class="block font-bold text-xs text-slate-700">تاريخ الزيارة</label>
+                            <input type="date" id="booking-date" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-slate-900 text-sm font-medium focus:outline-none focus:border-brand-500 transition-all">
+                        </div>
+
+                        <!-- Time Slot Select -->
+                        <div class="space-y-2">
+                            <label class="block font-bold text-xs text-slate-700">الفترة الزمنية</label>
+                            <select id="booking-time-slot" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-slate-900 text-sm font-medium focus:outline-none focus:border-brand-500 transition-all">
+                                <option value="">اختر الفترة المناسبة...</option>
+                                <option value="الفترة الصباحية (9:00 ص - 12:00 م)">الفترة الصباحية (9:00 ص - 12:00 م)</option>
+                                <option value="الفترة المسائية الأولى (4:00 م - 7:00 م)">الفترة المسائية الأولى (4:00 م - 7:00 م)</option>
+                                <option value="الفترة المسائية المتأخرة (7:00 م - 10:00 م)">الفترة المسائية المتأخرة (7:00 م - 10:00 م)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="submitBooking()" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white font-black text-base rounded-2xl shadow-xl shadow-brand-500/30 transition-all active:scale-95 flex items-center justify-center gap-2 mt-6">
+                        <i class="fa-solid fa-paper-plane text-sm"></i>
+                        <span>تأكيد الحجز وإرسال الطلب</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // Global State
+        let roomCounts = {
+            majlis: 0,
+            bedroom: 0
+        };
+
+        // Stores all instantiated rooms with their configurations
+        // Key format: 'majlis-1', 'bedroom-1', etc.
+        let roomsData = {};
+
+        // Currently active room being configured in Step 3
+        let currentRoomKey = null;
+
+        // Currently selected voice assistant in Step 4
+        let selectedAssistantName = null;
+
+        // Pricing constants
+        const PRICE_PER_SWITCH = 120;
+        const PRICE_SMART_AC = 250;
+
+        // Initialize minimum date for booking input to today
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('booking-date');
+            if (dateInput) {
+                dateInput.min = today;
+            }
+            updateGlobalPrice();
+        });
+
+        // Room count adjustments in Step 1
+        function updateRoomCount(type, delta) {
+            let newVal = roomCounts[type] + delta;
+            if (newVal < 0) newVal = 0;
+            if (newVal > 2) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'تنبيه',
+                    text: 'الحد الأقصى لكل نوع غرفة هو غرفتان (2) للتجربة.',
+                    confirmButtonColor: '#16a34a'
+                });
+                return;
+            }
+            roomCounts[type] = newVal;
+            document.getElementById(`count-${type}`).innerText = newVal;
+        }
+
+        // Build House Model (Transition from Step 1 to Step 2)
+        function buildHouseModel() {
+            const totalRooms = roomCounts.majlis + roomCounts.bedroom;
+            if (totalRooms === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'تنبيه هام',
+                    text: 'الرجاء اختيار غرفة واحدة على الأقل (مجلس أو غرفة نوم) للمتابعة.',
+                    confirmButtonColor: '#16a34a'
+                });
+                return;
+            }
+
+            // Initialize roomsData objects if not already present
+            generateRoomsDataStructure();
+            
+            // Render Hotspots on Step 2 map
+            renderHotspots();
+
+            // Transition to Step 2
+            goToStep(2);
+        }
+
+        function generateRoomsDataStructure() {
+            let newRoomsData = {};
+
+            // Majlis rooms
+            for (let i = 1; i <= roomCounts.majlis; i++) {
+                let key = `majlis-${i}`;
+                if (roomsData[key]) {
+                    newRoomsData[key] = roomsData[key];
+                } else {
+                    newRoomsData[key] = {
+                        type: 'majlis',
+                        name: `مجلس ${i}`,
+                        switches: 0,
+                        white: 0,
+                        black: 0,
+                        smartAC: false,
+                        lightingMode: 'normal' // 'normal' or 'movie'
+                    };
+                }
+            }
+
+            // Bedroom rooms
+            for (let i = 1; i <= roomCounts.bedroom; i++) {
+                let key = `bedroom-${i}`;
+                if (roomsData[key]) {
+                    newRoomsData[key] = roomsData[key];
+                } else {
+                    newRoomsData[key] = {
+                        type: 'bedroom',
+                        name: `غرفة نوم ${i}`,
+                        switches: 0,
+                        white: 0,
+                        black: 0,
+                        smartAC: false,
+                        lightingMode: 'normal'
+                    };
+                }
+            }
+
+            roomsData = newRoomsData;
+        }
+
+        // Render Hotspots dynamically based on selected rooms
+        function renderHotspots() {
+            const container = document.getElementById('hotspots-container');
+            container.innerHTML = '';
+
+            // Predefined coordinates for up to 2 majlis and 2 bedrooms on the blueprint background
+            const coordinates = {
+                'majlis-1': { top: '35%', left: '30%' },
+                'majlis-2': { top: '65%', left: '30%' },
+                'bedroom-1': { top: '35%', left: '70%' },
+                'bedroom-2': { top: '65%', left: '70%' }
+            };
+
+            let keys = Object.keys(roomsData);
+            keys.forEach(key => {
+                let room = roomsData[key];
+                let coords = coordinates[key] || { top: '50%', left: '50%' };
+                let isConfigured = room.switches > 0 || room.smartAC;
+                
+                let dotColorClass = isConfigured ? 'bg-brand-500 shadow-brand-500/50' : 'bg-amber-500 shadow-amber-500/50 hotspot-pulse';
+                let statusText = isConfigured ? `${room.switches} مفاتيح` : 'تأسيس';
+                let iconClass = room.type === 'majlis' ? 'fa-couch' : 'fa-bed';
+
+                let html = `
+                    <div onclick="openRoomConfig('${key}')" class="absolute cursor-pointer group transform -translate-x-1/2 -translate-y-1/2 transition-transform hover:scale-110" style="top: ${coords.top}; left: ${coords.left};">
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="relative w-12 h-12 rounded-2xl bg-slate-900/90 border border-white/20 text-white flex items-center justify-center shadow-xl ${dotColorClass}">
+                                <i class="fa-solid ${iconClass} text-sm"></i>
+                            </div>
+                            <div class="bg-slate-900/90 backdrop-blur-md text-white px-3 py-1.5 rounded-xl text-xs font-bold border border-white/10 shadow-lg flex items-center gap-2 whitespace-nowrap">
+                                <span>${room.name}</span>
+                                <span class="w-1.5 h-1.5 rounded-full ${isConfigured ? 'bg-brand-500' : 'bg-amber-500'}"></span>
+                                <span class="text-[10px] text-slate-300 font-medium">(${statusText})</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+
+            // Check if at least one room is configured to show checkout button in Step 2
+            checkCheckoutEligibility();
+        }
+
+        function checkCheckoutEligibility() {
+            let hasConfigured = false;
+            let totalP = calculateGlobalTotal();
+
+            for (let k in roomsData) {
+                if (roomsData[k].switches > 0 || roomsData[k].smartAC) {
+                    hasConfigured = true;
+                    break;
+                }
+            }
+
+            const checkoutBtn = document.getElementById('checkout-btn');
+            if (hasConfigured && totalP > 0) {
+                checkoutBtn.classList.remove('hidden');
+            } else {
+                checkoutBtn.classList.add('hidden');
+            }
+        }
+
+        // Open Room Configuration (Transition from Step 2 to Step 3)
+        function openRoomConfig(roomKey) {
+            currentRoomKey = roomKey;
+            let room = roomsData[roomKey];
+
+            // Set Title & Subtitle
+            document.getElementById('active-room-title').innerText = room.name;
+            document.getElementById('active-room-subtitle').innerText = room.type === 'majlis' ? 'إعداد المجلس الذكي' : 'إعداد غرفة النوم الذكية';
+
+            // Set Interior Image based on room type
+            const interiorImg = document.getElementById('room-interior-img');
+            if (room.type === 'majlis') {
+                interiorImg.src = 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1200&auto=format&fit=crop';
+            } else {
+                interiorImg.src = 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?q=80&w=1200&auto=format&fit=crop';
+            }
+
+            // Sync UI inputs with room state
+            document.getElementById('room-switch-count').innerText = room.switches;
+            document.getElementById('room-switch-total-label').innerText = `${room.switches} مفاتيح`;
+            document.getElementById('color-white-count').innerText = room.white;
+            document.getElementById('color-black-count').innerText = room.black;
+            document.getElementById('smart-ac-checkbox').checked = room.smartAC;
+
+            setLightingMode(room.lightingMode, false);
+
+            // Reset zoom state
+            const wrapper = document.getElementById('room-bg-wrapper');
+            wrapper.style.transform = 'scale(1)';
+            document.getElementById('zoom-toggle-btn').innerHTML = '<i class="fa-solid fa-magnifying-glass-plus text-brand-600"></i><span>تكبير الجدار (Zoom In)</span>';
+
+            // Render visual switches
+            renderVisualSwitches();
+
+            // Transition to Step 3
+            goToStep(3);
+        }
+
+        // Back from Step 3 to Step 2
+        function backToPlan() {
+            renderHotspots();
+            goToStep(2);
+        }
+
+        // Save and return to plan
+        function saveAndReturnToPlan() {
+            renderHotspots();
+            goToStep(2);
+        }
+
+        // Update room switches in Step 3
+        function updateRoomSwitches(delta) {
+            let room = roomsData[currentRoomKey];
+            let newVal = room.switches + delta;
+            if (newVal < 0) newVal = 0;
+            if (newVal > 8) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'تنبيه',
+                    text: 'الحد الأقصى لمفاتيح الحائط في الغرفة الواحدة هو 8 مفاتيح.',
+                    confirmButtonColor: '#16a34a'
+                });
+                return;
+            }
+
+            room.switches = newVal;
+
+            // If color distribution exceeds new switch total, adjust colors proportionally
+            if ((room.white + room.black) > room.switches) {
+                room.white = room.switches;
+                room.black = 0;
+            }
+
+            document.getElementById('room-switch-count').innerText = room.switches;
+            document.getElementById('room-switch-total-label').innerText = `${room.switches} مفاتيح`;
+            document.getElementById('color-white-count').innerText = room.white;
+            document.getElementById('color-black-count').innerText = room.black;
+
+            renderVisualSwitches();
+            updateGlobalPrice();
+        }
+
+        // Update color count for switches
+        function updateColorCount(color, delta) {
+            let room = roomsData[currentRoomKey];
+            let otherColor = color === 'white' ? 'black' : 'white';
+            
+            let newVal = room[color] + delta;
+            if (newVal < 0) newVal = 0;
+
+            // Sum of white + black cannot exceed room.switches
+            if (newVal + room[otherColor] > room.switches) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'تنبيه',
+                    text: 'مجموع المفاتيح البيضاء والسوداء يجب ألا يتجاوز إجمالي مفاتيح الغرفة (' + room.switches + ').',
+                    confirmButtonColor: '#16a34a'
+                });
+                return;
+            }
+
+            room[color] = newVal;
+            document.getElementById('color-white-count').innerText = room.white;
+            document.getElementById('color-black-count').innerText = room.black;
+
+            renderVisualSwitches();
+        }
+
+        // Render tiny CSS-based UI elements representing switches on the wall image
+        function renderVisualSwitches() {
+            const container = document.getElementById('rendered-switches-container');
+            container.innerHTML = '';
+
+            let room = roomsData[currentRoomKey];
+            let total = room.switches;
+
+            for (let i = 0; i < total; i++) {
+                let isWhite = i < room.white;
+                let bgColor = isWhite ? 'bg-white border-slate-300 text-slate-800' : 'bg-slate-900 border-slate-700 text-white';
+                let indicatorColor = isWhite ? 'bg-brand-500' : 'bg-brand-400';
+
+                let switchHtml = `
+                    <div class="w-12 h-16 rounded-xl border-2 ${bgColor} shadow-2xl flex flex-col items-center justify-between p-2 transform hover:scale-105 transition-all pointer-events-auto">
+                        <span class="w-2 h-2 rounded-full ${indicatorColor} animate-pulse"></span>
+                        <div class="w-6 h-8 rounded-lg bg-slate-100/20 border border-current/10 flex items-center justify-center">
+                            <i class="fa-solid fa-power-off text-[10px] opacity-80"></i>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += switchHtml;
+            }
+        }
+
+        // Zoom feature toggle
+        let isZoomed = false;
+        function toggleZoom() {
+            isZoomed = !isZoomed;
+            const wrapper = document.getElementById('room-bg-wrapper');
+            const btn = document.getElementById('zoom-toggle-btn');
+
+            if (isZoomed) {
+                wrapper.style.transform = 'scale(1.4)';
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass-minus text-brand-600"></i><span>تصغير الجدار (Zoom Out)</span>';
+            } else {
+                wrapper.style.transform = 'scale(1)';
+                btn.innerHTML = '<i class="fa-solid fa-magnifying-glass-plus text-brand-600"></i><span>تكبير الجدار (Zoom In)</span>';
+            }
+        }
+
+        // Smart AC checkbox toggle
+        function toggleSmartAC() {
+            let room = roomsData[currentRoomKey];
+            room.smartAC = document.getElementById('smart-ac-checkbox').checked;
+            updateGlobalPrice();
+        }
+
+        // Lighting simulation mode
+        function setLightingMode(mode, updateState = true) {
+            let room = roomsData[currentRoomKey];
+            if (updateState && room) {
+                room.lightingMode = mode;
+            }
+
+            const overlay = document.getElementById('movie-overlay');
+            const badge = document.getElementById('lighting-mode-badge');
+            const btnNormal = document.getElementById('btn-mode-normal');
+            const btnMovie = document.getElementById('btn-mode-movie');
+
+            if (mode === 'movie') {
+                overlay.className = 'absolute inset-0 bg-indigo-950/60 movie-mode transition-all duration-500 pointer-events-none';
+                badge.innerText = 'وضع السينما (Movie Mode)';
+                btnMovie.className = 'py-2.5 px-4 rounded-xl border border-brand-500 bg-brand-50 text-brand-800 font-bold text-xs flex items-center justify-center gap-2 transition-all';
+                btnNormal.className = 'py-2.5 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs flex items-center justify-center gap-2 transition-all';
+            } else {
+                overlay.className = 'absolute inset-0 bg-transparent transition-all duration-500 pointer-events-none';
+                badge.innerText = 'الوضع العادي';
+                btnNormal.className = 'py-2.5 px-4 rounded-xl border border-brand-500 bg-brand-50 text-brand-800 font-bold text-xs flex items-center justify-center gap-2 transition-all';
+                btnMovie.className = 'py-2.5 px-4 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs flex items-center justify-center gap-2 transition-all';
+            }
+        }
+
+        // Calculate Global Total Price in SAR
+        function calculateGlobalTotal() {
+            let total = 0;
+            for (let k in roomsData) {
+                let room = roomsData[k];
+                total += room.switches * PRICE_PER_SWITCH;
+                if (room.smartAC) {
+                    total += PRICE_SMART_AC;
+                }
+            }
+            return total;
+        }
+
+        function updateGlobalPrice() {
+            let total = calculateGlobalTotal();
+            document.getElementById('global-total-price').innerText = total.toLocaleString();
+            
+            // Also update checkout total display if visible
+            const checkoutTotal = document.getElementById('checkout-total-display');
+            if (checkoutTotal) {
+                checkoutTotal.innerText = total.toLocaleString() + ' ر.س';
+            }
+        }
+
+        // Voice Assistant Selection in Step 4
+        function selectAssistant(assistant) {
+            selectedAssistantName = assistant;
+            const cardAlexa = document.getElementById('assistant-alexa');
+            const cardGoogle = document.getElementById('assistant-google');
+            const checkAlexa = document.getElementById('check-alexa');
+            const checkGoogle = document.getElementById('check-google');
+
+            if (assistant === 'alexa') {
+                cardAlexa.className = 'cursor-pointer border-2 border-brand-600 rounded-2xl p-5 text-center space-y-3 transition-all bg-brand-50/50 relative group shadow-md';
+                checkAlexa.style.opacity = '1';
+
+                cardGoogle.className = 'cursor-pointer border-2 border-slate-200 rounded-2xl p-5 text-center space-y-3 transition-all hover:border-brand-300 relative group';
+                checkGoogle.style.opacity = '0';
+            } else {
+                cardGoogle.className = 'cursor-pointer border-2 border-brand-600 rounded-2xl p-5 text-center space-y-3 transition-all bg-brand-50/50 relative group shadow-md';
+                checkGoogle.style.opacity = '1';
+
+                cardAlexa.className = 'cursor-pointer border-2 border-slate-200 rounded-2xl p-5 text-center space-y-3 transition-all hover:border-brand-300 relative group';
+                checkAlexa.style.opacity = '0';
+            }
+        }
+
+        // Prepare Checkout Summary Details
+        function prepareCheckoutSummary() {
+            const container = document.getElementById('checkout-summary-details');
+            container.innerHTML = '';
+
+            let detailsHtml = '';
+            for (let k in roomsData) {
+                let room = roomsData[k];
+                if (room.switches > 0 || room.smartAC) {
+                    detailsHtml += `<div class="flex justify-between"><span>• ${room.name} (${room.switches} مفاتيح ${room.smartAC ? '+ مكيف ذكي' : ''})</span><span class="font-bold">${(room.switches * PRICE_PER_SWITCH + (room.smartAC ? PRICE_SMART_AC : 0))} ر.س</span></div>`;
+                }
+            }
+            if (detailsHtml === '') {
+                detailsHtml = '<div>لم يتم إعداد أي غرفة بعد.</div>';
+            }
+            container.innerHTML = detailsHtml;
+            updateGlobalPrice();
+        }
+
+        // Navigation between SPA steps
+        function goToStep(stepNumber) {
+            for (let i = 1; i <= 4; i++) {
+                const sec = document.getElementById(`step-${i}`);
+                if (i === stepNumber) {
+                    sec.classList.remove('hidden');
+                    setTimeout(() => {
+                        sec.style.opacity = '1';
+                        sec.style.transform = 'translateY(0)';
+                    }, 50);
+                } else {
+                    sec.classList.add('hidden');
+                    sec.style.opacity = '0';
+                    sec.style.transform = 'translateY(10px)';
+                }
+            }
+
+            if (stepNumber === 4) {
+                prepareCheckoutSummary();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Submit Booking & Final Validation
+        function submitBooking() {
+            const dateVal = document.getElementById('booking-date').value;
+            const timeSlotVal = document.getElementById('booking-time-slot').value;
+
+            if (!selectedAssistantName) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'المساعد الذكي مطلوب',
+                    text: 'الرجاء اختيار أحد المساعدين الذكيين (Amazon Alexa أو Google Assistant).',
+                    confirmButtonColor: '#16a34a'
+                });
+                return;
+            }
+
+            if (!dateVal || !timeSlotVal) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'بيانات الموعد ناقصة',
+                    text: 'الرجاء اختيار تاريخ ووقت الزيارة والتركيب.',
+                    confirmButtonColor: '#16a34a'
+                });
+                return;
+            }
+
+            // Generate Random Order Number
+            const orderNum = 'AMR-' + Math.floor(100000 + Math.random() * 900000);
+            const assistantTitle = selectedAssistantName === 'alexa' ? 'Amazon Alexa' : 'Google Assistant';
+            const finalTotal = calculateGlobalTotal();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'تم تأكيد حجزك بنجاح!',
+                html: `
+                    <div class="text-right space-y-2 mt-4 text-sm">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+                            <div class="flex justify-between"><span class="text-slate-500">رقم الطلب:</span><span class="font-black text-slate-900">${orderNum}</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">المساعد الذكي:</span><span class="font-black text-slate-900">${assistantTitle}</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">موعد الزيارة:</span><span class="font-black text-slate-900">${dateVal}</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">الفترة:</span><span class="font-black text-slate-900">${timeSlotVal}</span></div>
+                            <div class="flex justify-between pt-2 border-t border-slate-200"><span class="text-slate-500">الإجمالي النهائي:</span><span class="font-black text-brand-600">${finalTotal.toLocaleString()} ر.س</span></div>
+                        </div>
+                        <p class="text-xs text-slate-500 pt-2 text-center">سيتواصل معك فريق التركيب والصيانة في الموعد المحدد لتأكيد تفاصيل الزيارة.</p>
+                    </div>
+                `,
+                confirmButtonText: 'حسناً، شكراً لك',
+                confirmButtonColor: '#16a34a',
+                allowOutsideClick: false
+            }).then(() => {
+                // Reset application state or reload
+                window.location.reload();
+            });
+        }
+    </script>
+</body>
+</html>
